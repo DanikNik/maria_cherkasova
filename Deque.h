@@ -94,6 +94,11 @@ Deque<T>::Deque(const Deque& other_deque){
 	}
 }
 
+template<class T>
+Deque<T>::Deque(Deque &&deq) {
+    *this = move(deq);
+}
+
 template <class T>
 Deque<T>::~Deque() {
     delete [] data;
@@ -283,22 +288,18 @@ T &Deque<T>::operator [] (int idx) {
 
 template<class T>
 Deque<T>& Deque<T>::operator=(Deque const &deq) {
-    return Deque<T>(deq);
-}
-
-template<class T>
-Deque<T>& Deque<T>::operator=(Deque &&deq) {
     this -> length = deq.length;
     delete [] this -> data;
     this -> data = new T [this -> length];
-    for (int i = 0; i < this -> length; i++){
+    for (int i = 0; i < this -> length; ++i) {
         this -> data[i] = deq.data[i];
     }
 }
 
 template<class T>
-Deque<T>::Deque(Deque &&deq) {
-
+Deque<T>& Deque<T>::operator=(Deque &&deq) {
+    *this = move(deq);
+    return *this;
 }
 
 
