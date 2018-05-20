@@ -42,7 +42,6 @@ public:
     friend bool operator >= (DequeIterator<S>& first, DequeIterator<S>& second);
     template <class S>
     friend bool operator <= (DequeIterator<S>& first, DequeIterator<S>& second);
-    //TODO: += -= int operators
     //TODO: -> operator
 	T& operator *();
 };
