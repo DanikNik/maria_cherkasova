@@ -19,6 +19,7 @@ public:
 	Deque(std::initializer_list<T> values);	//init_list
 	Deque(const Deque& other_deque);		//copy constructor
     //TODO: move constructor
+    Deque(Deque && deq);
 	~Deque();
 
 	T at(int idx) const;
@@ -40,7 +41,7 @@ public:
     friend ostream& operator << (ostream &os, const Deque<U> &obj);
     T& operator [](int idx);
     //TODO: = - copy and = - move operators
-    Deque operator = (const Deque& deq);
+    Deque& operator = (const Deque& deq);
     Deque& operator = (Deque && deq);
 
     friend class DequeIterator<T>;
@@ -281,7 +282,7 @@ T &Deque<T>::operator [] (int idx) {
 }
 
 template<class T>
-Deque<T> Deque<T>::operator=(Deque const &deq) {
+Deque<T>& Deque<T>::operator=(Deque const &deq) {
     return Deque<T>(deq);
 }
 
@@ -293,6 +294,11 @@ Deque<T>& Deque<T>::operator=(Deque &&deq) {
     for (int i = 0; i < this -> length; i++){
         this -> data[i] = deq.data[i];
     }
+}
+
+template<class T>
+Deque<T>::Deque(Deque &&deq) {
+
 }
 
 
