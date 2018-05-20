@@ -10,7 +10,8 @@ int main()
 {
     Deque<int> deq1 = {10, 2, 3, -4, -2, 5, -124, 102};
     Deque<int>::iterator it = deq1.Begin();
-    it++;
+    Sort(deq1.Begin(), deq1.End());
+    cout << deq1;
     cout << endl;
     return 0;
 }
