@@ -28,6 +28,8 @@ public:
 
     DequeIterator<T> operator + (int a);
     DequeIterator<T> operator - (int a);
+    DequeIterator<T> operator += (int a);
+    DequeIterator<T> operator -= (int a);
     template <class S>
     friend bool operator ==(DequeIterator<S>& first, DequeIterator<S>& second);
     template <class S>
@@ -155,6 +157,16 @@ template<class T>
 DequeIterator<T> DequeIterator<T>::operator-(int a) {
     if (this -> index - a < 0) throw OutOfRangeException();
     return DequeIterator<T>(*(this -> assigned_deque), this -> index - a);
+}
+
+template<class T>
+DequeIterator<T> DequeIterator<T>::operator+=(int a) {
+    return (*this + a);
+}
+
+template<class T>
+DequeIterator<T> DequeIterator<T>::operator-=(int a) {
+    return (*this - a);
 }
 
 

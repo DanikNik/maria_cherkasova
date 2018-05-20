@@ -9,9 +9,8 @@ using namespace std;
 int main()
 {
     Deque<int> deq1 = {10, 2, 3, -4, -2, 5, -124, 102};
-    Deque<int> deq2 = Deque<int>(10);
-    CopyIf(deq1.Begin(), deq1.End(), deq2.Begin(), [](int x){return x<0;});
-    cout << deq2;
+    Deque<int>::iterator it = deq1.Begin();
+    it++;
     cout << endl;
     return 0;
 }
