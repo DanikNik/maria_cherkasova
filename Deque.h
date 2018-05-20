@@ -223,6 +223,7 @@ ostream& operator <<(ostream &os, const Deque<T> &obj) {
     for (int i = 0; i < obj.length; i++) {
         os << obj.data[i] << ' ';
     }
+    return os;
 }
 
 template<class T>
