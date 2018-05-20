@@ -8,9 +8,8 @@
 using namespace std;
 int main()
 {
-    Deque<unsigned> deq1 = {10, 2, 3, 4, 0, 5, 124, 102};
-    Deque<unsigned>::iterator it = deq1.Begin();
-    Sort(deq1.Begin(), deq1.End());
+    Deque<int> deq1 = {10, 2, 3, 4, 0, 5, 124, 102};
+    deq1.Resize(20);
     cout << deq1;
     cout << endl;
     return 0;

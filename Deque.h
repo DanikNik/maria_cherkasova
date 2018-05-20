@@ -31,7 +31,7 @@ public:
 	void Insert(int pos, T elem);
 	//TODO: void Insert(int pos, DequeIterator beg, DequeIterator end);
 	void Erase(int pos);
-	//TODO: void Resize(int num);
+	void Resize(int num);
 	bool Empty();
 	int Size()const;
 	void Clear();
@@ -299,6 +299,23 @@ template<class T>
 Deque<T>& Deque<T>::operator=(Deque &&deq) {
     *this = move(deq);
     return *this;
+}
+
+template<class T>
+void Deque<T>::Resize(int num) {
+    T* temp = new T [this -> length];
+    for (int j = 0; j < this -> length; ++j) {
+        temp[j] = this -> data[j];
+    }
+    delete [] this -> data;
+    this -> data = new T [num];
+    for (int i = 0; i < this->length; ++i) {
+        this -> data[i] = temp[i];
+    }
+    for (int k = this -> length; k < num; ++k) {
+        this -> data[k] = 0;
+    }
+    this -> length = num;
 }
 
 
