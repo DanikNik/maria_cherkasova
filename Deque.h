@@ -15,7 +15,7 @@ public:
 	Deque();							//default
 	Deque(int len);							//with len
 	Deque(int len, T default_value);		//with len and default
-    //TODO:  Deque(DequeIterator beg, DequeIterator end);
+    Deque(DequeIterator<T> beg, DequeIterator<T> end);
 	Deque(std::initializer_list<T> values);	//init_list
 	Deque(const Deque& other_deque);		//copy constructor
     Deque(Deque && deq);
@@ -28,9 +28,9 @@ public:
     T PopBack();
     void PushFront(T elem);
     T PopFront();
-	void Insert(int pos, T elem);
-	//TODO: void Insert(int pos, DequeIterator beg, DequeIterator end);
-	void Erase(int pos);
+	void Insert(DequeIterator<T> pos, T elem);
+	void Insert(DequeIterator<T> pos, DequeIterator<T> beg, DequeIterator<T> end);
+	void Erase(DequeIterator<T> pos);
 	void Resize(int num);
 	bool Empty();
 	int Size()const;
@@ -200,22 +200,34 @@ T Deque<T>::PopFront() {
 }
 
 template<class T>
-void Deque<T>::Insert(int pos, T elem) {
+void Deque<T>::Insert(DequeIterator<T> pos, T elem) {
     this -> length +=1;
-    T* temp = new T[this -> length];
-    for(int i = 0; i < pos; i++){
-        temp[i] = data[i];
+    for (DequeIterator<T> i = this -> End(); i > pos; i--){
+        *i = *(i - 1);
     }
-    temp[pos] = elem;
-    for (int i = pos + 1; i < this -> length; i++){
-        temp[i] = data[i-1];
+    *pos = elem;
+}
+
+template<class T>
+void Deque<T>::Insert(DequeIterator<T> pos, DequeIterator<T> beg, DequeIterator<T> end) {
+    T * temp = new T [this ->length];
+    for (int i = 0; i < this -> length; ++i) {
+        temp [i] = this -> data[i];
     }
-    delete [] data;
-    data = new T [this -> length];
-    for (int i = 0; i < this -> length; i++){
-        data[i] = temp[i];
+    int delta = end.index - beg.index;
+    delete [] this -> data;
+    this -> length += delta;
+    this -> data = new T [ this -> length];
+    for (int j = 0; j < pos.index; ++j) {
+        this -> data [j] = temp [j];
     }
-    delete [] temp;
+    for (int k = pos.index; k < pos.index + delta; ++k) {
+        data [k] = *beg;
+        beg++;
+    }
+    for (int l = pos.index + delta; l < this -> length; ++l) {
+        data[l] = temp [l-delta];
+    }
 }
 
 template <class T>
@@ -253,22 +265,11 @@ bool Deque<T>::Empty() {
 }
 
 template<class T>
-void Deque<T>::Erase(int pos) {
-    this -> length -=1;
-
-    T* temp = new T[this -> length];
-    for(int i = 0; i < pos; i++){
-        temp[i] = data[i];
+void Deque<T>::Erase(DequeIterator<T> pos) {
+    for (DequeIterator<T> i = pos; i < this -> End(); i++){
+        *i = *(++pos);
     }
-    for (int i = pos + 1; i <= this -> length; i++){
-        temp[i-1] = data[i];
-    }
-    delete [] data;
-    data = new T [this -> length];
-    for (int i = 0; i < this -> length; i++){
-        data[i] = temp[i];
-    }
-    delete [] temp;
+    this -> length -= 1;
 }
 
 template<class T>
@@ -316,6 +317,15 @@ void Deque<T>::Resize(int num) {
         this -> data[k] = 0;
     }
     this -> length = num;
+}
+
+template<class T>
+Deque<T>::Deque(DequeIterator<T> beg, DequeIterator<T> end) {
+    this -> length = 0;
+    while (beg != end){
+        this -> PushBack(*beg);
+        beg++;
+    }
 }
 
 

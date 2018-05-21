@@ -64,4 +64,6 @@ void CopyIf(T sourceBeg, T sourceEnd, T destBeg, Pred pred){
         sourceBeg++;
     }
 };
+
+
 #endif //MARIA_CHERKASOVA_ALGORITHM_H

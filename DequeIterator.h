@@ -6,7 +6,8 @@
 #include "OutOfRangeException.h"
 using namespace std;
 
-template <class T> class Deque;
+template <class T>
+class Deque;
 
 template <class T> class DequeIterator {
 private:
@@ -31,19 +32,20 @@ public:
     DequeIterator<T> operator += (int a);
     DequeIterator<T> operator -= (int a);
     template <class S>
-    friend bool operator ==(DequeIterator<S>& first, DequeIterator<S>& second);
+    friend bool operator ==(DequeIterator<S> first, DequeIterator<S> second);
     template <class S>
-    friend bool operator != (DequeIterator<S>& first, DequeIterator<S>& second);
+    friend bool operator != (DequeIterator<S> first, DequeIterator<S> second);
     template <class S>
-    friend bool operator > (DequeIterator<S>& first, DequeIterator<S>& second);
+    friend bool operator > (DequeIterator<S> first, DequeIterator<S> second);
     template <class S>
-    friend bool operator < (DequeIterator<S>& first, DequeIterator<S>& second);
+    friend bool operator < (DequeIterator<S> first, DequeIterator<S> second);
     template <class S>
-    friend bool operator >= (DequeIterator<S>& first, DequeIterator<S>& second);
+    friend bool operator >= (DequeIterator<S> first, DequeIterator<S> second);
     template <class S>
-    friend bool operator <= (DequeIterator<S>& first, DequeIterator<S>& second);
-    //TODO: -> operator
-	T& operator *();
+    friend bool operator <= (DequeIterator<S> first, DequeIterator<S> second);
+    T& operator *();
+
+    friend class Deque<T>;
 };
 
 
@@ -103,32 +105,32 @@ DequeIterator<T>::~DequeIterator(){
 }
 
 template<class S>
-bool operator==(DequeIterator<S>& first, DequeIterator<S>& second) {
+bool operator==(DequeIterator<S> first, DequeIterator<S> second) {
     return first.position == second.position;
 }
 
 template<class S>
-bool operator!=(DequeIterator<S> &first, DequeIterator<S> &second) {
+bool operator!=(DequeIterator<S> first, DequeIterator<S> second) {
     return !(first == second);
 }
 
 template<class S>
-bool operator>(DequeIterator<S> &first, DequeIterator<S> &second) {
+bool operator>(DequeIterator<S> first, DequeIterator<S> second) {
     return (first.assigned_deque == second.assigned_deque && first.index > second.index);
 }
 
 template<class S>
-bool operator<(DequeIterator<S> &first, DequeIterator<S> &second) {
+bool operator<(DequeIterator<S> first, DequeIterator<S> second) {
     return second > first;
 }
 
 template<class S>
-bool operator>=(DequeIterator<S> &first, DequeIterator<S> &second) {
+bool operator>=(DequeIterator<S> first, DequeIterator<S> second) {
     return (first.assigned_deque == second.assigned_deque && first.index >= second.index);
 }
 
 template<class S>
-bool operator<=(DequeIterator<S> &first, DequeIterator<S> &second) {
+bool operator<=(DequeIterator<S> first, DequeIterator<S> second) {
     return second >= first;
 }
 
