@@ -297,13 +297,17 @@ const T &Deque<T>::operator[](int idx) const {
 /// ???
 template<class T>                            //тут чего-то не хватает. см. любую литературу
 Deque<T>& Deque<T>::operator=(Deque const &deq) {
-
+    this -> length = deq.length;
+    this -> first = deq.first;
+    this -> last = deq.last;
 }
 
 /// ???                                         //аналогично предыдущему
 template<class T>
 Deque<T>& Deque<T>::operator=(Deque &&deq) {
-
+    this -> length = deq.length;
+    this -> first = deq.first;
+    this -> last = deq.last;
 }
 
 

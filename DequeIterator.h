@@ -16,7 +16,7 @@ template <class T> class DequeIterator {
 private:
     Node<T> * position;                           //тут он сказал, что нет смысла делать и позицию, и индекс, нужно оставить что-то одно
     int index;
-    const Deque<T>* assigned_deque;
+    Deque<T>* assigned_deque;
 public:
     DequeIterator();
     DequeIterator(Deque<T> &deque, int index);
