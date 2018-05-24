@@ -6,26 +6,29 @@
 #include "OutOfRangeException.h"
 using namespace std;
 
+template <class T> struct Node;
+
+
 template <class T>
 class Deque;
 
 template <class T> class DequeIterator {
 private:
-	T * position;
-	int index;
+    Node<T> * position;                           //тут он сказал, что нет смысла делать и позицию, и индекс, нужно оставить что-то одно
+    int index;
     const Deque<T>* assigned_deque;
 public:
     DequeIterator();
-	DequeIterator(const Deque<T>& deque, int index);
-	DequeIterator(const DequeIterator& other_iter);
+    DequeIterator(Deque<T> &deque, int index);
+    DequeIterator(const DequeIterator<T>& other_iter);
 
-	~DequeIterator();
+    ~DequeIterator();                         //что-то в деструкторе не устроило
 
-	DequeIterator& operator ++();
-	DequeIterator& operator --();
-	DequeIterator operator ++(int);
-	DequeIterator operator --(int);
-	DequeIterator& operator = (const DequeIterator other);
+    DequeIterator& operator ++();
+    DequeIterator& operator --();
+    DequeIterator operator ++(int);
+    DequeIterator operator --(int);
+    DequeIterator operator = (DequeIterator& other);
 
     DequeIterator<T> operator + (int a);
     DequeIterator<T> operator - (int a);
@@ -50,34 +53,48 @@ public:
 
 
 
-template<class T>
-DequeIterator<T>::DequeIterator() {}
-
-template<class T>
-DequeIterator<T>::DequeIterator(const Deque<T>& deque, int index){
-    this -> assigned_deque = &deque;
-    this -> index = index;
-	this -> position = &deque.data[index];
+template<class T>                            //в конструкторе надо изначально выделять хоть какую-то память
+DequeIterator<T>::DequeIterator() {
+    this -> position = nullptr;
+    this -> assigned_deque = nullptr;
+    this -> index = 0;
 }
 
 template<class T>
-DequeIterator<T>& DequeIterator<T>::operator++(){
-    if (index+1 >= this -> assigned_deque -> Size()){
-        throw OutOfRangeException();
+DequeIterator<T>::DequeIterator(Deque<T>& deque, int index) {
+    this->assigned_deque = &deque;
+    this->index = index;
+    this->position = deque.first;
+    for (int i = 1; i <=index; i++){
+        this -> position = this -> position-> forward;
     }
-    this -> index++;
-	this -> position = position + 1;
-	return *this;
 }
 
 template<class T>
-DequeIterator<T>& DequeIterator<T>::operator--(){
-    if (index-1 < 0){
+DequeIterator<T>::DequeIterator(const DequeIterator<T>& other_iter) {
+    this->position = other_iter.position;
+    this->index = other_iter.index;
+    this->assigned_deque = other_iter.assigned_deque;
+}
+
+template<class T>
+DequeIterator<T>& DequeIterator<T>::operator++() {
+    if (index + 1 >= this->assigned_deque->Size()) {
         throw OutOfRangeException();
     }
-	this -> index--;
-    this->position = position - 1;
-	return *this;
+    this->index++;
+    this->position = position -> forward;
+    return *this;
+}
+
+template<class T>
+DequeIterator<T>& DequeIterator<T>::operator--() {
+    if (index - 1 < 0) {
+        throw OutOfRangeException();
+    }
+    this->index--;
+    this->position = position -> back;
+    return *this;
 }
 
 template<class T>
@@ -95,13 +112,12 @@ DequeIterator<T> DequeIterator<T>::operator--(int) {
 }
 
 template<class T>
-T& DequeIterator<T>::operator*(){
-	return *(this -> position);
+T& DequeIterator<T>::operator*() {
+    return this->position->value;
 }
 
 template <class T>
-DequeIterator<T>::~DequeIterator(){
-//	cout << "destruct iter\n";
+DequeIterator<T>::~DequeIterator() {
 }
 
 template<class S>
@@ -135,29 +151,20 @@ bool operator<=(DequeIterator<S> first, DequeIterator<S> second) {
 }
 
 template<class T>
-DequeIterator<T>& DequeIterator<T>::operator=(const DequeIterator other) {
-    this -> index = other.index;
-    this -> position = other.position;
-    this -> assigned_deque = other.assigned_deque;
-}
-
-template<class T>
-DequeIterator<T>::DequeIterator(const DequeIterator &other_iter) {
-    this -> position = other_iter.position;
-    this -> index = other_iter.index;
-    this -> assigned_deque = other_iter.assigned_deque;
+DequeIterator<T> DequeIterator<T>::operator=(DequeIterator& other) {
+    return DequeIterator(other);
 }
 
 template<class T>
 DequeIterator<T> DequeIterator<T>::operator+(int a) {
-    if (this -> index + a >= this -> assigned_deque->Size()) throw OutOfRangeException();
-    return DequeIterator<T>(*(this -> assigned_deque), this -> index + a);
+    if (this->index + a >= this->assigned_deque->Size()) throw OutOfRangeException();
+    return DequeIterator<T>(*(this->assigned_deque), this->index + a);
 }
 
 template<class T>
 DequeIterator<T> DequeIterator<T>::operator-(int a) {
-    if (this -> index - a < 0) throw OutOfRangeException();
-    return DequeIterator<T>(*(this -> assigned_deque), this -> index - a);
+    if (this->index - a < 0) throw OutOfRangeException();
+    return DequeIterator<T>(*(this->assigned_deque), this->index - a);
 }
 
 template<class T>

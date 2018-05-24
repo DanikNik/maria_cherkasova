@@ -5,40 +5,54 @@
 #include <iostream>
 #include "DequeIterator.h"
 #include "OutOfRangeException.h"
+
 using namespace std;
+
+template <class T> struct Node{
+    T value;
+    Node<T>* back;
+    Node<T>* forward;
+};
 
 template <class T> class Deque {
 private:
-	int length;
-	T* data;
+    int length;
+    Node<T>* first;
+    Node<T>* last;
 public:
-	Deque();							//default
-	Deque(int len);							//with len
-	Deque(int len, T default_value);		//with len and default
+    Deque();							//default
+    Deque(int len);							//with len
+    Deque(int len, T default_value);		//with len and default
     Deque(DequeIterator<T> beg, DequeIterator<T> end);
-	Deque(std::initializer_list<T> values);	//init_list
-	Deque(const Deque& other_deque);		//copy constructor
+    Deque(std::initializer_list<T> values);	//init_list
+    Deque(const Deque& other_deque);		//copy constructor
     Deque(Deque && deq);
-	~Deque();
+    ~Deque();
 
-	T at(int idx) const;
-	DequeIterator<T> Begin();
-	DequeIterator<T> End();
-	void PushBack(T elem);
+    T& at(int idx);           //должно быть реализовано двумя способами (константный и нет). смотри сайт cplusplus.com
+    const T& at (int idx) const;
+    DequeIterator<T> Begin();
+    DequeIterator<T> End();
+    void PushBack(T elem);
     T PopBack();
     void PushFront(T elem);
     T PopFront();
-	void Insert(DequeIterator<T> pos, T elem);
-	void Insert(DequeIterator<T> pos, DequeIterator<T> beg, DequeIterator<T> end);
-	void Erase(DequeIterator<T> pos);
-	void Resize(int num);
-	bool Empty();
-	int Size()const;
-	void Clear();
+    void Insert(DequeIterator<T> pos, T elem);
+    void Insert(DequeIterator<T> pos, DequeIterator<T> beg, DequeIterator<T> end);
+    void Erase(DequeIterator<T> pos);
+    void Resize(int num);
+    bool Empty();
+    int Size()const;
+    void Clear();
 
     template <class U>
     friend ostream& operator << (ostream &os, const Deque<U> &obj);
-    T& operator [](int idx);
+
+    template <class U>
+    friend ostream& operator << (ostream &os, Deque<U> &obj);
+
+    T& operator [](int idx);          //должно быть реализовано двумя способами (константный и нет). смотри сайт cplusplus.com
+    const T& operator[](int idx) const;
     Deque& operator = (const Deque& deq);
     Deque& operator = (Deque && deq);
 
@@ -47,193 +61,176 @@ public:
 
 };
 
-template <class T>
-Deque<T>::Deque(){
-    cout << "pure constructor\n";
-    this -> length = 0;
-    this -> data = nullptr;
+template <class T>          //вроде тут что-то не то, но не факт
+Deque<T>::Deque() {
+    length = 0;
+    first = nullptr;
+    last = first;
 }
 
 template<class T>
 Deque<T>::Deque(const int len) {
-    this->length = len;
-    this->data = new T[len];
-    for (int i = 0; i < this -> length; i++){
-        this -> data [i] = 0;
+    for (int i = 0; i < len; ++i) {
+        this -> PushBack(0);
     }
 }
 
 template<class T>
-Deque<T>::Deque(int len, T default_value){
-    this->length = len;
-    this->data = new T[len];
-    for (int i = 0; i < len; i++) {
-        this -> data[i] = default_value;
+Deque<T>::Deque(int len, T default_value) {
+    for (int i = 0; i < len; ++i) {
+        this -> PushBack(default_value);
     }
 }
 
 template<class T>
 Deque<T>::Deque(std::initializer_list<T> values) {
-	this->length = values.size();
-	this -> data = new T [this -> length];
-	int a = 0;
-	for (auto i = values.begin(); i != values.end(); i++) {
-		this->data[a] = *i;
-		a++;
-	}
+    this -> length = 0;
+    for (auto i = values.begin(); i <values.end(); i ++) {
+        this -> PushBack(*i);
+    }
+}
+
+template<class T>            // вроде тут не обязательно писать this
+Deque<T>::Deque(const Deque& other_deque) {
+    this -> length = other_deque.length;
+    this -> first = other_deque.first;
+    this -> last = other_deque.last;
+}
+
+template<class T>                           // ??? переделать
+Deque<T>::Deque(Deque &&other_deque) {
+    this -> length = other_deque.length;
+    this -> first = other_deque.first;
+    this -> last = other_deque.last;
 }
 
 template<class T>
-Deque<T>::Deque(const Deque& other_deque){
-	this->length = other_deque.Size();
-	this->data = new T[this->length];
-	for (int i = 0; i < this->length; i++) {
-		this->data[i] = other_deque.at(i);
-	}
-}
-
-template<class T>
-Deque<T>::Deque(Deque &&deq) {
-    *this = move(deq);
+Deque<T>::Deque(DequeIterator<T> beg, DequeIterator<T> end) {
 }
 
 template <class T>
 Deque<T>::~Deque() {
-    delete [] data;
-//    cout << "destruct deque" << endl;
+    for (int i = 0; i < this-> length; i++){
+        Node<T>* temp = this -> first;
+        delete first;
+        first = temp -> forward;
+    }
+    //recursively delete
+}
+
+template<class T>                                // все, что закомментировано, должно находиться в мейне
+T& Deque<T>::at(const int idx){
+    if (idx >= this -> length || idx < 0) throw OutOfRangeException();
+    Node<T>* ret = first;
+    for (int i = 1; i <=idx; i++){
+        ret = ret -> forward;
+    }
+    return ret -> value;
 }
 
 template<class T>
-T Deque<T>::at(const int idx) const {
-    try {
-        if (idx < 0 || idx >= this->length) {
-            throw OutOfRangeException(idx);
-        }
-            return data[idx];
+const T &Deque<T>::at(int idx) const {
+    if (idx >= this -> length || idx < 0) throw OutOfRangeException();
+    Node<T>* ret = first;
+    for (int i = 1; i <=idx; i++){
+        ret = ret -> forward;
     }
-    catch(OutOfRangeException){
-        cout << "Ooops. OutOfRangeException " << idx << endl;
-        return data[0];
-    }
+    return ret -> value;
 }
 
-template<class T>
+/// ???
+template<class T>                                //переделать. слишком сложно. не должно записывать в левый массив. все должно добавляться сразу
 void Deque<T>::PushBack(T elem) {
-    if (this->length == 0) {
-        this -> length += 1;
-        this->data = new T;
-        *data = elem;
-    }
-    else {
-        T *temp = new T[this->length];
-        for (int i = 0; i < this->length; i++) {
-            temp[i] = this->data[i];
-        }
-        delete [] this->data;
-        this->length += 1;
-        this->data = new T[this->length];
-        for (int i = 0; i < this->length - 1; ++i) {
-            this->data[i] = temp[i];
-        }
-        this->data[this -> length-1] = elem;
-        delete[] temp;
+    if (length == 0) {
+        length = 1;
+        Node<T> *node = new Node<T>;
+        node->value = elem;
+        node->forward = nullptr;
+        node->back = nullptr;
+        first = node;
+        last = node;
+    } else {
+        length += 1;
+        Node<T> *node = new Node<T>;
+        node->value = elem;
+        node->forward = nullptr;
+        node->back = this->last;
+        this->last->forward = node;
+        this->last = node;
     }
 }
 
-template<class T>
+template<class T>                        //по аналогии с предыдущим
 T Deque<T>::PopBack() {
-    this -> length -= 1;
-    T temp_data;
-    temp_data = this -> data[this -> length];
-    T* temp = new T [this->length];
-    for (int i = 0; i < this->length; i++){
-        temp[i] = this -> data[i];
-    }
-    delete [] this -> data;
-    this -> data = new T [this->length];
-    for (int i = 0; i < this->length; i++){
-        this -> data[i] = temp[i];
-    }
-    delete [] temp;
-    return temp_data;
+    length -=1;
+    T ret = this -> last -> value;
+    this -> last = this -> last -> back;
+    this -> last -> forward = nullptr;
+    return ret;
 }
 
-template<class T>
+template<class T>                                  //по аналогии
 void Deque<T>::PushFront(T elem) {
-    if (this->length == 0){
-        this->length = 1;
-        this -> data = new T;
-        this -> data[0] = elem;
-    }
-    else{
-        this->length += 1;
-        T* temp = new T [this->length];
-        for (int i = 1; i < this->length; i++){
-            temp[i] = this -> data[i-1];
-        }
-        temp[0] = elem;
-        delete [] this -> data;
-        this -> data = new T [this->length];
-        for (int i = 0; i < this->length; i++){
-            this -> data[i] = temp[i];
-        }
-        delete [] temp;
+    if (length == 0) {
+        length = 1;
+        Node<T> *node = new Node<T>;
+        node->value = elem;
+        node->forward = nullptr;
+        node->back = nullptr;
+        first = node;
+        last = node;
+    } else {
+        length += 1;
+        Node<T> *node = new Node<T>;
+        node->value = elem;
+        node->back = nullptr;
+        node->forward = this->first;
+        this -> first -> back = node;
+        this->first = node;
     }
 }
 
-template<class T>
+template<class T>                               //по аналогии
 T Deque<T>::PopFront() {
-    this -> length -= 1;
-    T temp_data;
-    temp_data = this -> data[0];
-    T* temp = new T [this->length];
-    for (int i = 1; i < this->length; i++){
-        temp[i] = this -> data[i-1];
-    }
-    delete [] this -> data;
-    this -> data = new T [this->length];
-    for (int i = 0; i < this->length; i++){
-        this -> data[i] = temp[i];
-    }
-    delete [] temp;
-    return temp_data;
+    length -=1;
+    T ret = this -> first -> value;
+    this -> first = this -> first -> forward;
+    return ret;
 }
 
 template<class T>
 void Deque<T>::Insert(DequeIterator<T> pos, T elem) {
-    this -> length +=1;
-    for (DequeIterator<T> i = this -> End(); i > pos; i--){
-        *i = *(i - 1);
+    length +=1;
+    Node<T> * new_node = new Node<T>;
+    new_node -> back = this -> last;
+    this -> last -> forward = new_node;
+    this -> last = new_node;
+    for (int i = this -> length-1; i > pos.index; i--){
+        this -> at(i) = this -> at(i-1);
     }
-    *pos = elem;
+    this -> at(pos.index) = elem;
 }
 
-template<class T>
+template<class T>                         //он сказал, что эту сортировку возможно реализовать как-то проще
 void Deque<T>::Insert(DequeIterator<T> pos, DequeIterator<T> beg, DequeIterator<T> end) {
-    T * temp = new T [this ->length];
-    for (int i = 0; i < this -> length; ++i) {
-        temp [i] = this -> data[i];
-    }
-    int delta = end.index - beg.index;
-    delete [] this -> data;
-    this -> length += delta;
-    this -> data = new T [ this -> length];
-    for (int j = 0; j < pos.index; ++j) {
-        this -> data [j] = temp [j];
-    }
-    for (int k = pos.index; k < pos.index + delta; ++k) {
-        data [k] = *beg;
-        beg++;
-    }
-    for (int l = pos.index + delta; l < this -> length; ++l) {
-        data[l] = temp [l-delta];
+    for (auto i = beg; i < end; i ++){
+        this -> Insert(pos, *i);
+        pos ++;
     }
 }
 
-template <class T>
+template <class T>                               //что-то не то. смотри сайт cplusplus.com или любую литературу
 ostream& operator <<(ostream &os, const Deque<T> &obj) {
     for (int i = 0; i < obj.length; i++) {
-        os << obj.data[i] << ' ';
+        os << obj.at(i) << ' ';
+    }
+    return os;
+}
+
+template<class U>
+ostream &operator<<(ostream &os, Deque<U> &obj) {
+    for (int i = 0; i < obj.length; i++) {
+        os << obj.at(i) << ' ';
     }
     return os;
 }
@@ -245,20 +242,35 @@ DequeIterator<T> Deque<T>::Begin() {
 
 template<class T>
 DequeIterator<T> Deque<T>::End() {
-    return DequeIterator<T>(*this, this -> length-1);
+    return DequeIterator<T>(*this, this->length - 1);
 }
 
 template<class T>
 int Deque<T>::Size()const {
-    return this -> length;
+    return this->length;
 }
 
+template<class T>                             //тут он исправил, все, что закомментировано, не нужно
+void Deque<T>::Resize(int num) {
+    for (int i = this -> length; i < num; i++){
+        length +=1;
+        Node<T> * new_node = new Node<T>;
+        new_node -> back = this -> last;
+        this -> last -> forward = new_node;
+        this -> last = new_node;
+    }
+}
 template<class T>
 void Deque<T>::Clear() {
+    for (int i = 0; i < this-> length; i++){
+        Node<T>* temp = this -> first;
+        delete first;
+        first = temp -> forward;
+    }
     this -> length = 0;
-    delete [] this -> data;
+    this -> first = nullptr;
+    this -> last = nullptr;
 }
-
 template<class T>
 bool Deque<T>::Empty() {
     return !this->length;
@@ -266,66 +278,32 @@ bool Deque<T>::Empty() {
 
 template<class T>
 void Deque<T>::Erase(DequeIterator<T> pos) {
-    for (DequeIterator<T> i = pos; i < this -> End(); i++){
-        *i = *(++pos);
+    for (int i = pos.index; i < this -> length - 1; i++){
+        this -> at(i) = this -> at(i+1);
     }
-    this -> length -= 1;
+    this -> last = this -> last -> back;
 }
 
-template<class T>
+template<class T>                                //т.к. оператор индексирования должен реализовываться двумя способами (константный и нет), нужно для второго аналогичное
 T &Deque<T>::operator [] (int idx) {
-    try {
-        if (idx < 0 || idx >= this->length) {
-            throw OutOfRangeException(idx);
-        }
-        return data[idx];
-    }
-    catch(OutOfRangeException){
-        cout << "Ooops. OutOfRangeException " << idx << endl;
-        return data[0];
-    }
+    return this -> at(idx);
 }
 
 template<class T>
-Deque<T>& Deque<T>::operator=(Deque const &deq) {
-    this -> length = deq.length;
-    delete [] this -> data;
-    this -> data = new T [this -> length];
-    for (int i = 0; i < this -> length; ++i) {
-        this -> data[i] = deq.data[i];
-    }
+const T &Deque<T>::operator[](int idx) const {
+    return this -> at(idx);
 }
 
+/// ???
+template<class T>                            //тут чего-то не хватает. см. любую литературу
+Deque<T>& Deque<T>::operator=(Deque const &deq) {
+
+}
+
+/// ???                                         //аналогично предыдущему
 template<class T>
 Deque<T>& Deque<T>::operator=(Deque &&deq) {
-    *this = move(deq);
-    return *this;
-}
 
-template<class T>
-void Deque<T>::Resize(int num) {
-    T* temp = new T [this -> length];
-    for (int j = 0; j < this -> length; ++j) {
-        temp[j] = this -> data[j];
-    }
-    delete [] this -> data;
-    this -> data = new T [num];
-    for (int i = 0; i < this->length; ++i) {
-        this -> data[i] = temp[i];
-    }
-    for (int k = this -> length; k < num; ++k) {
-        this -> data[k] = 0;
-    }
-    this -> length = num;
-}
-
-template<class T>
-Deque<T>::Deque(DequeIterator<T> beg, DequeIterator<T> end) {
-    this -> length = 0;
-    while (beg != end){
-        this -> PushBack(*beg);
-        beg++;
-    }
 }
 
 
