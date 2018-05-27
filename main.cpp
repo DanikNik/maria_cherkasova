@@ -14,12 +14,8 @@ struct A{
 int main()
 {
     Deque<int> deq = {1, 2, 3, 4, 5, 6};
-    Deque<int> deq2 = {-1, -2, -3, -4, -5};
-    Deque<int>::iterator it = Deque<int>::iterator(deq, 3);
-    deq.PushBack(10);
-    deq.PushBack(20);
-    deq.PushBack(30);
-    deq.Insert(it, deq2.Begin(), deq2.End());
+    Deque<int>::iterator it = deq.Begin();
+    deq.Erase(it);
     cout << deq;
 
     return 0;
