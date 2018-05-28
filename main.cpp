@@ -11,11 +11,13 @@ struct A{
     int a;
     int b;
 };
+
 int main()
 {
     Deque<int> deq = {1, 2, 3, 4, 5, 6};
+    Deque<int> deq1 = {-1, -2, -3, -4, -5, -6};
     Deque<int>::iterator it = deq.Begin();
-    deq.Erase(it);
+    deq.Insert(it, deq1.Begin(), deq1.End());
     cout << deq;
 
     return 0;

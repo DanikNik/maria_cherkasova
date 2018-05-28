@@ -2,6 +2,7 @@
 #ifndef DEQUE_ITER
 #define DEQUE_ITER
 
+#include "Deque.h"
 #include "OutOfRangeException.h"
 using namespace std;
 
@@ -21,7 +22,7 @@ public:
     DequeIterator& operator --();
     DequeIterator operator ++(int);
     DequeIterator operator --(int);
-    DequeIterator operator = (DequeIterator& other);
+    DequeIterator operator = (const DequeIterator& other);
 
     DequeIterator<T> operator + (int a);
     DequeIterator<T> operator - (int a);
@@ -95,6 +96,8 @@ T& DequeIterator<T>::operator*() {
     return *(this->position);
 }
 
+
+
 template<class S>
 bool operator==(DequeIterator<S> first, DequeIterator<S> second) {
     return first.position == second.position;
@@ -126,7 +129,7 @@ bool operator<=(DequeIterator<S> first, DequeIterator<S> second) {
 }
 
 template<class T>
-DequeIterator<T> DequeIterator<T>::operator=(DequeIterator& other) {
+DequeIterator<T> DequeIterator<T>::operator=(const DequeIterator& other) {
     return DequeIterator(other);
 }
 

@@ -53,8 +53,8 @@ public:
 
     T& operator [](int idx);          //должно быть реализовано двумя способами (константный и нет). смотри сайт cplusplus.com
     const T& operator[](int idx) const;
-    Deque& operator = (const Deque& deq);
-    Deque& operator = (Deque && deq);
+    Deque operator = (const Deque& deq);
+    Deque operator = (Deque && deq);
 
     friend class DequeIterator<T>;
     typedef DequeIterator<T> iterator;
@@ -91,8 +91,8 @@ template<class T>
 Deque<T>::Deque(initializer_list<T> values) {
     this -> length = values.size();
     this -> data = new T [alloc_memory_len];
-    for (auto i = values.begin(); i != values.end(); i++){
-        static int idx = 0;
+    int idx = 0;
+    for (auto i = values.begin(); i < values.end(); i++){
         this -> data[idx] = *i;
         idx++;
     }
@@ -100,12 +100,17 @@ Deque<T>::Deque(initializer_list<T> values) {
 
 template<class T>
 Deque<T>::Deque(const Deque &other_deque) {
-
+    this -> length = other_deque.length;
+    this -> data = new T [alloc_memory_len];
+    for (int i = 0; i < this -> length; ++i) {
+        this -> data[i] = other_deque.data[i];
+    }
 }
 
 template<class T>
 Deque<T>::Deque(Deque &&deq) {
-
+    this -> length = deq.length;
+    this -> data = deq.data;
 }
 
 template<class T>
@@ -166,40 +171,54 @@ T Deque<T>::PopFront() {
 
 template<class T>
 void Deque<T>::Insert(DequeIterator<T> pos, T elem) {
-
+    this -> length ++;
+    for (int i = this -> length-1; i > (pos.position - this->data); --i) {
+        this-> data[i] = this -> data[i-1];
+    }
+    this->data[(pos.position-this->data)]=elem;
 }
 
 template<class T>
 void Deque<T>::Insert(DequeIterator<T> pos, DequeIterator<T> beg, DequeIterator<T> end) {
-
+    int delta = (end.position - beg.position);
+    this -> length += delta;
+    for (int i = this -> length; i > ((pos.position - this -> data )+ delta-1); --i) {
+        this -> data[i] = this-> data[i-delta];
+    }
+    for (int j = (pos.position - this -> data); j < ((pos.position - this -> data) + delta) ; ++j) {
+        this -> data[j] = *beg;
+        beg++;
+    }
 }
 
 template<class T>
 void Deque<T>::Erase(DequeIterator<T> pos) {
-    this -> length --;
-    for (auto i = pos; i < this -> End();) {
-        *i = *(++i);
+    this-> length --;
+    for (int i = (pos.position - this -> data); i < this -> length; ++i) {
+        this -> data[i] = this -> data [i+1];
     }
 }
 
 template<class T>
 void Deque<T>::Resize(int num) {
-
+    this -> length = num;
 }
 
 template<class T>
 bool Deque<T>::Empty() {
-    return false;
+    return !(this -> length);
 }
 
 template<class T>
 int Deque<T>::Size() const {
-    return 0;
+    return this -> length;
 }
 
 template<class T>
 void Deque<T>::Clear() {
-
+    this -> length = 0;
+    delete [] this -> data;
+    this -> data = new T [this -> alloc_memory_len];
 }
 
 template<class U>
@@ -229,13 +248,13 @@ const T &Deque<T>::operator[](int idx) const {
 }
 
 template<class T>
-Deque<T> &Deque<T>::operator=(const Deque &deq) {
-
+Deque<T> Deque<T>::operator = (const Deque &deq) {
+    return Deque<T>(deq);
 }
 
 template<class T>
-Deque<T> &Deque<T>::operator=(Deque &&deq) {
-
+Deque<T> Deque<T>::operator = (Deque &&deq) {
+    return Deque<T>(deq);
 }
 
 #endif
