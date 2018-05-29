@@ -16,9 +16,8 @@ T FindIf(T beg, T end, Pred pred){
 template<class T>
 T MinElement(T beg, T end){
     T min = beg;
-    while(beg != end){
-        if(*beg<*min) min = beg;
-        ++beg;
+    for (auto i = beg; i < end; i++){
+        if(*i<*min) min = i;
     }
     return min;
 }
@@ -26,9 +25,8 @@ T MinElement(T beg, T end){
 template <class T>
 T MaxElement(T beg, T end){
     T max = beg;
-    while(beg != end){
-        if(*beg>*max) max = beg;
-        ++beg;
+    for (auto i = beg; i < end; i++){
+        if(*i>*max) max = i;
     }
     return max;
 }
