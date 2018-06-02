@@ -14,6 +14,7 @@ struct A{
 
 int main()
 {
+
     Deque<int> deq1 = Deque<int>();							//default
     Deque<A> deq2 = Deque<A>(10);							//with len
     Deque<int> deq3 = Deque<int>(15, 1);		//with len and default
@@ -28,8 +29,10 @@ int main()
     cout << deq1.PopFront() << endl;
     Deque<int>::iterator it = Deque<int>::iterator(deq5, 3);
     deq5.Insert(it++, 100);
-    deq5.Insert(++it, deq3.Begin()+2, deq3.End()-5);
-    cout << deq5; cout << endl;
+    for (int i = 0; i < deq5.Size(); ++i) {
+        cout << deq5[i] << ' ';
+    }
+    cout << endl;
     deq5.Erase(it + 3);
     deq3.Resize(25);
     cout << deq1.Empty() << endl;
@@ -48,8 +51,10 @@ int main()
     cout << *it_find << endl;
     cout << *it_max << endl;
     cout << *it_min << endl;
-    cout << deq5 << endl;
-
+    for (int j = 0; j < deq5.Size(); ++j) {
+        cout << deq5[j] << ' ';
+    }
+    cout << endl;
 
     return 0;
 }
