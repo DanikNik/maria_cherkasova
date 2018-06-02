@@ -188,6 +188,7 @@ void Deque<T>::Insert(DequeIterator<T> pos, T elem) {
         this-> data[i] = this -> data[i-1];
     }
     this->data[(pos.position-this->data)]=elem;
+    this -> last_index ++;
 }
 
 template<class T>
