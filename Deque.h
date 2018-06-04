@@ -51,7 +51,7 @@ public:
 
     T& operator [](int idx);
     const T& operator[](int idx) const;
-    Deque operator = (const Deque& deq);
+    Deque& operator = (const Deque& deq);
     Deque operator = (Deque && deq);
 
     friend class DequeIterator<T>;
@@ -106,6 +106,9 @@ Deque<T>::Deque(initializer_list<T> values) {
 
 template<class T>
 Deque<T>::Deque(const Deque &other_deque) {
+    this -> alloc_memory_len = other_deque.alloc_memory_len;
+    this -> first_index = other_deque.first_index;
+    this -> last_index = other_deque.last_index;
     this -> data = new T [alloc_memory_len];
     for (int i = other_deque.first_index; i < other_deque.last_index;++i) {
         this -> PushBack(other_deque.data[i]);
@@ -262,8 +265,12 @@ const T &Deque<T>::operator[](int idx) const {
 }
 
 template<class T>
-Deque<T> Deque<T>::operator = (const Deque &deq) {
-    return Deque<T>(deq);
+Deque<T>& Deque<T>::operator = (const Deque &deq) {
+    this -> alloc_memory_len = deq.alloc_memory_len;
+    this -> data = new T [alloc_memory_len];
+    for (int i = deq.first_index; i < deq.last_index;++i) {
+        this -> PushBack(deq.data[i]);
+    }
 }
 
 template<class T>

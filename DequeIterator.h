@@ -22,7 +22,7 @@ public:
     DequeIterator& operator --();
     DequeIterator operator ++(int);
     DequeIterator operator --(int);
-    DequeIterator operator = (const DequeIterator& other);
+    DequeIterator& operator = (const DequeIterator& other);
 
     DequeIterator<T> operator + (int a);
     DequeIterator<T> operator - (int a);
@@ -130,8 +130,9 @@ bool operator<=(DequeIterator<S> first, DequeIterator<S> second) {
 }
 
 template<class T>
-DequeIterator<T> DequeIterator<T>::operator=(const DequeIterator& other) {
-    return DequeIterator(other);
+DequeIterator<T>& DequeIterator<T>::operator=(const DequeIterator& other) {
+    this -> position = other.position;
+    return *this;
 }
 
 template<class T>
