@@ -69,8 +69,6 @@ template<class T>
 Deque<T>::Deque(int len) {
     this -> length = len;
     alloc_memory_len = length;
-    first_index = alloc_memory_len/2 -1;
-    last_index = alloc_memory_len/2;
     this -> data = new T [alloc_memory_len];
 }
 
@@ -202,7 +200,7 @@ void Deque<T>::Insert(DequeIterator<T> pos, T elem) {
 
 template<class T>
 void Deque<T>::Insert(DequeIterator<T> pos, DequeIterator<T> beg, DequeIterator<T> end) {
-    int delta = (end.position - beg.position);
+    int delta = (int)(end.position - beg.position);
     if(this -> first_index + length + delta > alloc_memory_len){
         this -> reallocate();
     }
@@ -220,7 +218,7 @@ void Deque<T>::Insert(DequeIterator<T> pos, DequeIterator<T> beg, DequeIterator<
 template<class T>
 void Deque<T>::Erase(DequeIterator<T> pos) {
     this-> length --;
-    for (int i = first_index + (pos.position - this -> data); i < first_index + this -> length; ++i) {
+    for (int i =(int) (first_index + (pos.position - this -> data)); i < first_index + this -> length; ++i) {
         this -> data[i] = this -> data [i+1];
     }
 }
@@ -249,14 +247,14 @@ void Deque<T>::Clear() {
     this -> length = 0;
     delete [] this -> data;
     this -> data = new T [this -> alloc_memory_len];
-    this -> first_index = 49;
-    this -> last_index = 50;
+    this -> first_index = alloc_memory_len/2-1;
+    this -> last_index = alloc_memory_len/2;
 }
 
 
 template<class T>
 T &Deque<T>::operator[](int idx) {
-    return this -> data[idx];
+    return this -> data[first_index + idx];
 }
 
 template<class T>
