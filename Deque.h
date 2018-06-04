@@ -79,7 +79,7 @@ Deque<T>::Deque(int len, T default_value) {
     first_index = alloc_memory_len/2 -1;
     last_index = alloc_memory_len/2;
     this -> data = new T [alloc_memory_len];
-    for (int i = first_index-len/2; i < last_index + len/2; i ++){
+    for (int i = first_index; i < last_index; i ++){
         this -> data[i] = default_value;
     }
 }
