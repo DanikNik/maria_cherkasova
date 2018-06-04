@@ -117,6 +117,7 @@ template<class T>
 Deque<T>::Deque(Deque &&deq) {
     this -> length = deq.length;
     this -> data = deq.data;
+    deq.data = nullptr;
     this -> first_index = deq.first_index;
     this -> last_index = deq.last_index;
 }
@@ -260,7 +261,7 @@ T &Deque<T>::operator[](int idx) {
 
 template<class T>
 const T &Deque<T>::operator[](int idx) const {
-    return this -> at(idx);
+    return this -> data[first_index + idx];
 }
 
 template<class T>
@@ -276,7 +277,8 @@ Deque<T>& Deque<T>::operator = (const Deque &deq) {
 template<class T>
 Deque<T>& Deque<T>::operator = (Deque &&deq){
     this -> length = deq.length;
-    this -> data = deq.data;  // формально в этом и заключается перенос типа я указатель данных из одной деки передаю присваиваю указатель другой я хз, честно, говори с преподом
+    this -> data = deq.data;
+    deq.data = nullptr; // формально в этом и заключается перенос типа я в указатель данных из одной деки присваиваю указатель другой я хз, честно, говори с преподом
     this -> alloc_memory_len = deq.alloc_memory_len;
     this -> first_index = deq.first_index;
     this -> last_index = deq.last_index;
