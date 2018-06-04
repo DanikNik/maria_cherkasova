@@ -221,11 +221,12 @@ void Deque<T>::Erase(DequeIterator<T> pos) {
     for (int i =(int) (first_index + (pos.position - this -> data)); i < first_index + this -> length; ++i) {
         this -> data[i] = this -> data [i+1];
     }
+    last_index --;
 }
 
 template<class T>
 void Deque<T>::Resize(int num) {
-    if(num > alloc_memory_len){
+    while(num > alloc_memory_len){
         this -> reallocate();
     }
     this -> last_index = first_index + num;
