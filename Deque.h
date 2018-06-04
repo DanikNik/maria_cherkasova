@@ -52,7 +52,7 @@ public:
     T& operator [](int idx);
     const T& operator[](int idx) const;
     Deque& operator = (const Deque& deq);
-    Deque operator = (Deque && deq);
+    Deque& operator = (Deque && deq);
 
     friend class DequeIterator<T>;
     typedef DequeIterator<T> iterator;
@@ -271,15 +271,17 @@ Deque<T>& Deque<T>::operator = (const Deque &deq) {
     for (int i = deq.first_index; i < deq.last_index;++i) {
         this -> PushBack(deq.data[i]);
     }
+    return *this;
 }
 
 template<class T>
-Deque<T> Deque<T>::operator = (Deque &&deq){
+Deque<T>& Deque<T>::operator = (Deque &&deq){
     this -> length = deq.length;
     this -> data = deq.data;  // формально в этом и заключается перенос типа я указатель данных из одной деки передаю присваиваю указатель другой я хз, честно, говори с преподом
     this -> alloc_memory_len = deq.alloc_memory_len;
     this -> first_index = deq.first_index;
     this -> last_index = deq.last_index;
+    return *this;
 }
 
 template<class T>
