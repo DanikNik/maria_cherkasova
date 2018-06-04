@@ -19,8 +19,8 @@ template <class T> class Deque {
 private:
     int length;
     T* data;
-    int alloc_memory_len = 100;
-    int first_index= 49,  last_index= 50;
+    int alloc_memory_len = 10;
+    int first_index= 4, last_index= 5;
     void reallocate();
 public:
     Deque();
@@ -68,12 +68,18 @@ Deque<T>::Deque(){
 template<class T>
 Deque<T>::Deque(int len) {
     this -> length = len;
+    alloc_memory_len = length;
+    first_index = alloc_memory_len/2 -1;
+    last_index = alloc_memory_len/2;
     this -> data = new T [alloc_memory_len];
 }
 
 template<class T>
 Deque<T>::Deque(int len, T default_value) {
     this -> length = len;
+    alloc_memory_len = length;
+    first_index = alloc_memory_len/2 -1;
+    last_index = alloc_memory_len/2;
     this -> data = new T [alloc_memory_len];
     for (int i = first_index-len/2; i < last_index + len/2; i ++){
         this -> data[i] = default_value;
@@ -247,7 +253,7 @@ void Deque<T>::Clear() {
 
 template<class T>
 T &Deque<T>::operator[](int idx) {
-    return this -> at(idx);
+    return this -> data[idx];
 }
 
 template<class T>
@@ -261,8 +267,12 @@ Deque<T> Deque<T>::operator = (const Deque &deq) {
 }
 
 template<class T>
-Deque<T> Deque<T>::operator = (Deque &&deq) {
-    return Deque<T>(deq);
+Deque<T> Deque<T>::operator = (Deque &&deq){
+    this -> length = deq.length;
+    this -> data = deq.data;  // формально в этом и заключается перенос типа я указатель данных из одной деки передаю присваиваю указатель другой я хз, честно, говори с преподом
+    this -> alloc_memory_len = deq.alloc_memory_len;
+    this -> first_index = deq.first_index;
+    this -> last_index = deq.last_index;
 }
 
 template<class T>

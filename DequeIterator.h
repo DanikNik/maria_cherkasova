@@ -81,14 +81,14 @@ DequeIterator<T>& DequeIterator<T>::operator--() {
 template<class T>
 DequeIterator <T>DequeIterator<T>::operator++(int) {
     DequeIterator temp = *this;
-    ++*this;
+    ++position;
     return temp;
 }
 
 template<class T>
 DequeIterator<T> DequeIterator<T>::operator--(int) {
     DequeIterator temp = *this;
-    --*this;
+    --position;
     return temp;
 }
 
