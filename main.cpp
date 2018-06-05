@@ -33,7 +33,7 @@ int main()
         cout << deq5[i] << ' ';
     }
     cout << endl;
-    deq5.Erase(it + 3);
+    deq5.Erase(it);
     deq3.Resize(25);
     cout << deq1.Empty() << endl;
     cout << deq3.Size() << endl;
