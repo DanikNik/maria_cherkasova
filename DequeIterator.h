@@ -54,7 +54,6 @@ DequeIterator<T>::DequeIterator() {
 
 template<class T>
 DequeIterator<T>::DequeIterator(Deque<T>& deque, int index) {
-    if (index >= deque.length || index < 0) throw OutOfRangeException(index);
     this -> position = &deque[index];
 }
 

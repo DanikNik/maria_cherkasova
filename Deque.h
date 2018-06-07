@@ -20,7 +20,7 @@ private:
     int length;
     T* data;
     int alloc_memory_len = 10;
-    int first_index= 4, last_index= 5;
+    int first_index = 4, last_index = 5;
     void reallocate();
 public:
     Deque();
@@ -33,7 +33,7 @@ public:
     ~Deque();
 
     T& at(int idx);
-    const T& at (int idx) const;
+    const T& at(int idx) const;
     DequeIterator<T> Begin();
     DequeIterator<T> End();
     void PushBack(T elem);
@@ -60,242 +60,245 @@ public:
 };
 
 template <class T>
-Deque<T>::Deque(){
-    this -> length = 0;
-    this -> data = new T[alloc_memory_len];
+Deque<T>::Deque() {
+    this->length = 0;
+    this->data = new T[alloc_memory_len];
+    first_index = alloc_memory_len/2 -1;
+    last_index = alloc_memory_len/2;
 }
 
 template<class T>
 Deque<T>::Deque(int len) {
-    this -> length = len;
+    this->length = len;
     alloc_memory_len = length;
-    this -> data = new T [alloc_memory_len];
+    this->data = new T[alloc_memory_len];
 }
 
 template<class T>
 Deque<T>::Deque(int len, T default_value) {
-    this -> length = len;
+    this->length = len;
     alloc_memory_len = length;
-    first_index = alloc_memory_len/2 -1;
-    last_index = alloc_memory_len/2;
-    this -> data = new T [alloc_memory_len];
-    for (int i = first_index; i < last_index; i ++){
-        this -> data[i] = default_value;
+    first_index = alloc_memory_len / 2 - 1;
+    last_index = alloc_memory_len / 2;
+    this->data = new T[alloc_memory_len];
+    for (int i = first_index; i < last_index; i++) {
+        this->data[i] = default_value;
     }
 }
 
 template<class T>
 Deque<T>::Deque(DequeIterator<T> beg, DequeIterator<T> end) {
-    this -> data = new T [alloc_memory_len];
-    this -> length =0;
-    for (auto i = beg; i < end; i++){
-       this -> PushBack(*i);
+    this->data = new T[alloc_memory_len];
+    this->length = 0;
+    for (auto i = beg; i < end; i++) {
+        this->PushBack(*i);
     }
 }
 
 template<class T>
 Deque<T>::Deque(initializer_list<T> values) {
-    this -> length = 0;
-    this -> data = new T [alloc_memory_len];
-    for (auto i = values.begin(); i < values.end(); i++){
-        this -> PushBack(*i);
+    this->length = 0;
+    this->data = new T[alloc_memory_len];
+    for (auto i = values.begin(); i < values.end(); i++) {
+        this->PushBack(*i);
     }
 }
 
 template<class T>
 Deque<T>::Deque(const Deque &other_deque) {
-    this -> alloc_memory_len = other_deque.alloc_memory_len;
-    this -> first_index = other_deque.first_index;
-    this -> last_index = other_deque.last_index;
-    this -> data = new T [alloc_memory_len];
-    for (int i = other_deque.first_index; i < other_deque.last_index;++i) {
-        this -> PushBack(other_deque.data[i]);
+    this->alloc_memory_len = other_deque.alloc_memory_len;
+    this->first_index = other_deque.first_index;
+    this->last_index = other_deque.last_index;
+    this->data = new T[alloc_memory_len];
+    for (int i = other_deque.first_index; i < other_deque.last_index; ++i) {
+        this->PushBack(other_deque.data[i]);
     }
 }
 
 template<class T>
 Deque<T>::Deque(Deque &&deq) {
-    this -> length = deq.length;
-    delete[] this -> data;
-    this -> data = deq.data;
+    this->length = deq.length;
+    this->data = deq.data;
     deq.data = nullptr;
-    this -> first_index = deq.first_index;
-    this -> last_index = deq.last_index;
+    this->first_index = deq.first_index;
+    this->last_index = deq.last_index;
 }
 
 template<class T>
 Deque<T>::~Deque() {
-    delete [] this -> data;
+    delete[] this->data;
 }
 
 template<class T>
 T &Deque<T>::at(int idx) {
-    if (idx >= this -> length || idx < 0) throw OutOfRangeException(idx);
-    return this -> data[idx+first_index];
+    if (idx >= this->length || idx < 0) throw OutOfRangeException(idx);
+    return this->data[idx + first_index];
 }
 
 template<class T>
 const T &Deque<T>::at(int idx) const {
-    if (idx >= this -> length || idx < 0) throw OutOfRangeException(idx);
-    return this -> data[idx+first_index];
+    if (idx >= this->length || idx < 0) throw OutOfRangeException(idx);
+    return this->data[idx + first_index];
 }
 
 template<class T>
 DequeIterator<T> Deque<T>::Begin() {
-    return DequeIterator<T>(*this, 0);
+    return DequeIterator<T>(*this, first_index);
 }
 
 template<class T>
 DequeIterator<T> Deque<T>::End() {
-    return DequeIterator<T>(*this, this -> length -1);
+    return DequeIterator<T>(*this, last_index-1);
 }
 
 template<class T>
 void Deque<T>::PushBack(T elem) {
-    if(last_index > alloc_memory_len){
-        this -> reallocate();
+    if (last_index > alloc_memory_len) {
+        this->reallocate();
     }
-    this -> length ++;
-    this -> data[this -> last_index-1] = elem;
-    this -> last_index ++;
+    this->length++;
+    this->data[this->last_index - 1] = elem;
+    this->last_index++;
 }
 
 template<class T>
 T Deque<T>::PopBack() {
-    this -> length --;
-    this -> last_index --;
-    return this -> data[this -> last_index-1];
+    this->length--;
+    this->last_index--;
+    return this->data[this->last_index - 1];
 }
 
 template<class T>
 void Deque<T>::PushFront(T elem) {
-    if(this -> first_index - 1 < 0){
-        this -> reallocate();
+    if (this->first_index - 1 < 0) {
+        this->reallocate();
         for (int i = first_index; i < last_index; ++i) {
-            data[i+100] = data[i];
+            data[i + 1] = data[i];
         }
-        first_index+=100;
-        last_index += 100;
+        first_index += 1;
+        last_index += 1;
     }
-    this -> length++;
+    this->length++;
     data[--first_index] = elem;
 }
 
 template<class T>
 T Deque<T>::PopFront() {
-    this -> length --;
-    return this -> data[first_index++];
+    this->length--;
+    return this->data[first_index++];
 }
 
 template<class T>
 void Deque<T>::Insert(DequeIterator<T> pos, T elem) {
-    if(this -> length + 1 > alloc_memory_len){
-        this -> reallocate();
+    if (this->length + 1 > alloc_memory_len) {
+        this->reallocate();
     }
-    this -> length ++;
-    for (int i = this -> length-1; i > (pos.position - this->data); --i) {
-        this-> data[i] = this -> data[i-1];
+    this->length++;
+    for (int i = this->length - 1; i > (pos.position - this->data); --i) {
+        this->data[i] = this->data[i - 1];
     }
-    this->data[(pos.position-this->data)]=elem;
-    this -> last_index ++;
+    this->data[(pos.position - this->data)] = elem;
+    this->last_index++;
 }
 
 template<class T>
 void Deque<T>::Insert(DequeIterator<T> pos, DequeIterator<T> beg, DequeIterator<T> end) {
     int delta = (int)(end.position - beg.position);
-    if(this -> first_index + length + delta > alloc_memory_len){
-        this -> reallocate();
+    while (this->first_index + length + delta > alloc_memory_len) {
+        this->reallocate();
     }
-    this -> length += delta;
-    this -> last_index += delta;
-    for (int i = first_index + this -> length; i > first_index + ((pos.position - this -> data )+ delta-1); --i) {
-        this -> data[i] = this-> data[i-delta];
+    this->length += delta;
+    this->last_index += delta;
+    for (int i = first_index + length + delta; i > (int)((pos.position - data) + delta - 1); --i) {
+        this->data[i] = this->data[i - delta];
     }
-    for (int j = first_index + (pos.position - this -> data); j < first_index + ((pos.position - this -> data) + delta) ; ++j) {
-        this -> data[j] = *beg;
+    for (int j = (int)(pos.position - this->data); j < ((pos.position - this->data) + delta); ++j) {
+        this->data[j] = *beg;
         beg++;
     }
 }
 
 template<class T>
 void Deque<T>::Erase(DequeIterator<T> pos) {
-    this-> length --;
-    for (int i =(int) (first_index + (pos.position - this -> data)); i < first_index + this -> length; ++i) {
-        this -> data[i] = this -> data [i+1];
+    this->length--;
+    for (int i = (int)(first_index + (pos.position - this->data)); i < first_index + this->length; ++i) {
+        this->data[i] = this->data[i + 1];
     }
-    last_index --;
+    last_index--;
 }
 
 template<class T>
 void Deque<T>::Resize(int num) {
-    while(num > alloc_memory_len){
-        this -> reallocate();
+    while (num > alloc_memory_len) {
+        this->reallocate();
     }
-    this -> last_index = first_index + num;
-    this -> length = num;
+    this->last_index = first_index + num;
+    this->length = num;
 }
 
 template<class T>
 bool Deque<T>::Empty() {
-    return !(this -> length);
+    return !(this->length);
 }
 
 template<class T>
 int Deque<T>::Size() const {
-    return this -> length;
+    return this->length;
 }
 
 template<class T>
 void Deque<T>::Clear() {
-    this -> length = 0;
-    delete [] this -> data;
-    this -> data = new T [this -> alloc_memory_len];
-    this -> first_index = alloc_memory_len/2-1;
-    this -> last_index = alloc_memory_len/2;
+    this->length = 0;
+    delete[] this->data;
+    this->data = new T[this->alloc_memory_len];
+    this->first_index = alloc_memory_len / 2 - 1;
+    this->last_index = alloc_memory_len / 2;
 }
 
 
 template<class T>
 T &Deque<T>::operator[](int idx) {
-    return this -> data[first_index + idx];
+    return this->data[first_index + idx];
 }
 
 template<class T>
 const T &Deque<T>::operator[](int idx) const {
-    return this -> data[first_index + idx];
+    return this->data[first_index + idx];
 }
 
 template<class T>
 Deque<T>& Deque<T>::operator = (const Deque &deq) {
-    if (this == &deq){
-        return *this;
-    }
-    this -> alloc_memory_len = deq.alloc_memory_len;
-    this -> data = new T [alloc_memory_len];
-    for (int i = deq.first_index; i < deq.last_index;++i) {
-        this -> PushBack(deq.data[i]);
+    if (&deq != this) {
+        delete[] this->data;
+
+        this->alloc_memory_len = deq.alloc_memory_len;
+        this->data = new T[alloc_memory_len];
+        for (int i = deq.first_index; i < deq.last_index; ++i) {
+            this->PushBack(deq.data[i]);
+        }
     }
     return *this;
 }
 
 template<class T>
-Deque<T>& Deque<T>::operator = (Deque &&deq){
-    if (this == &deq){
-        return *this;
+Deque<T>& Deque<T>::operator = (Deque &&deq) {
+    if (&deq != this) {
+        delete[] this->data;
+
+        this->length = deq.length;
+        this->data = deq.data;
+        deq.data = nullptr;
+        this->alloc_memory_len = deq.alloc_memory_len;
+        this->first_index = deq.first_index;
+        this->last_index = deq.last_index;
     }
-    this -> length = deq.length;
-    this -> data = deq.data;
-    deq.data = nullptr;
-    this -> alloc_memory_len = deq.alloc_memory_len;
-    this -> first_index = deq.first_index;
-    this -> last_index = deq.last_index;
     return *this;
 }
 
 template<class T>
 void Deque<T>::reallocate() {
-    this -> alloc_memory_len +=1;
-    this -> data = (T*)(realloc(this -> data, this -> alloc_memory_len*sizeof(T)));
+    this->alloc_memory_len += 1;
+    this->data = (T*)(realloc(this->data, this->alloc_memory_len * sizeof(T)));
 }
 
 #endif

@@ -12,6 +12,13 @@ struct A{
     int b;
 };
 
+struct students{
+    unsigned id;
+    string name;
+    string group;
+    double last_mark;
+};
+
 int main()
 {
 
@@ -20,7 +27,7 @@ int main()
     Deque<int> deq3 = Deque<int>(15, 1);		//with len and default
     Deque<int> deq4 = Deque<int>(deq3.Begin(), deq3.End());
     Deque<A> deq0 = Deque<A>(deq2);
-    Deque<int> deq5 ={1, 2, -3, 4, 5, 6};
+    Deque<int> deq5 ={1, 2, -3, 4, -123, 6};
 
     cout << deq5.at(4) << endl;
     deq1.PushBack(180);
@@ -55,6 +62,7 @@ int main()
         cout << deq5[j] << ' ';
     }
     cout << endl;
+
 
     return 0;
 }
