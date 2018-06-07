@@ -58,11 +58,13 @@ int main()
     cout << *it_find << endl;
     cout << *it_max << endl;
     cout << *it_min << endl;
-    for (int j = 0; j < deq5.Size(); ++j) {
+    for (int j = 0; j < deq5.Size() + 1; ++j) {
         cout << deq5[j] << ' ';
     }
     cout << endl;
 
+    Deque<A> deq_A = {{1, 1}, {2, 2}};
+    ForEach(deq_A.Begin(), deq_A.End(), [](A a){cout << a.a << ' ' << a.b << endl; return a;});
 
     return 0;
 }

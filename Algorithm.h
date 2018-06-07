@@ -33,7 +33,7 @@ T MaxElement(T beg, T end){
 
 template <class T, class Oper>
 void ForEach(T beg, T end, Oper op){
-    while(beg <= end) {
+    while(beg != end) {
         *beg = op(*beg);
         ++beg;
     }
