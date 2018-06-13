@@ -72,6 +72,8 @@ Deque<T>::Deque(int len) {
     this->length = len;
     alloc_memory_len = length;
     this->data = new T[alloc_memory_len];
+    this -> first_index = alloc_memory_len/2-1;
+    this -> last_index = alloc_memory_len/2;
 }
 
 template<class T>
