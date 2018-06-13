@@ -148,7 +148,7 @@ DequeIterator<T> Deque<T>::Begin() {
 
 template<class T>
 DequeIterator<T> Deque<T>::End() {
-    return DequeIterator<T>(*this, last_index-1);
+    return DequeIterator<T>(*this, first_index + length);
 }
 
 template<class T>
@@ -204,12 +204,12 @@ void Deque<T>::Insert(DequeIterator<T> pos, T elem) {
 template<class T>
 void Deque<T>::Insert(DequeIterator<T> pos, DequeIterator<T> beg, DequeIterator<T> end) {
     int delta = (int)(end.position - beg.position);
-    while (this->first_index + length + delta > alloc_memory_len) {
+    while (this->length + delta > alloc_memory_len) {
         this->reallocate();
     }
     this->length += delta;
     this->last_index += delta;
-    for (int i = first_index + length + delta; i > (int)((pos.position - data) + delta - 1); --i) {
+    for (int i = first_index + length; i > (int)((pos.position - data) + delta - 1); --i) {
         this->data[i] = this->data[i - delta];
     }
     for (int j = (int)(pos.position - this->data); j < ((pos.position - this->data) + delta); ++j) {

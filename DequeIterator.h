@@ -41,6 +41,7 @@ public:
     template <class S>
     friend bool operator <= (DequeIterator<S> first, DequeIterator<S> second);
     T& operator *();
+    T* operator ->();
 
     friend class Deque<T>;
 };
@@ -154,6 +155,11 @@ DequeIterator<T> DequeIterator<T>::operator+=(int a) {
 template<class T>
 DequeIterator<T> DequeIterator<T>::operator-=(int a) {
     return (*this - a);
+}
+
+template <class T>
+T* DequeIterator<T>::operator->(){
+    return position;
 }
 
 

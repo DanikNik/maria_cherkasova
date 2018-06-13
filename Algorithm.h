@@ -40,7 +40,7 @@ void ForEach(T beg, T end, Oper op){
 };
 
 template <class T>
-void Sort(T beg, T end){
+void Sort(T& beg, T& end){
     for (T i = end; i > beg; i--){
         for (T j = beg; j < i; j++){
             if (*j > *(j+1)){

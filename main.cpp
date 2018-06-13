@@ -7,11 +7,6 @@
 #include <iomanip>
 using namespace std;
 
-struct A{
-    int a;
-    int b;
-};
-
 struct students{
     unsigned id;
     string name;
@@ -19,52 +14,34 @@ struct students{
     double last_mark;
 };
 
+
 int main()
 {
 
-    Deque<int> deq1 = Deque<int>();							//default
-    Deque<A> deq2 = Deque<A>(10);							//with len
-    Deque<int> deq3 = Deque<int>(15, 1);		//with len and default
-    Deque<int> deq4 = Deque<int>(deq3.Begin(), deq3.End());
-    Deque<A> deq0 = Deque<A>(deq2);
-    Deque<int> deq5 ={1, 2, -3, 4, -123, 6};
-
-    cout << deq5.at(4) << endl;
-    deq1.PushBack(180);
-    deq1.PushFront(90);
-    cout << deq1.PopBack() << endl;
-    cout << deq1.PopFront() << endl;
-    Deque<int>::iterator it = Deque<int>::iterator(deq5, 3);
-    deq5.Insert(it++, 100);
-    for (int i = 0; i < deq5.Size(); ++i) {
-        cout << deq5[i] << ' ';
+    Deque<students> deq = Deque<students>();
+    for (int i = 0; i < 5; ++i) {
+        students new_student;
+        cout << "[>] Enter id, name, group and last mark\n";
+        cin >> new_student.id >> new_student.name >> new_student.group >> new_student.last_mark;
+        deq.PushBack(new_student);
     }
-    cout << endl;
-    deq5.Erase(it);
-    deq3.Resize(25);
-    cout << deq1.Empty() << endl;
-    cout << deq3.Size() << endl;
+    Deque<students> deq1 = {{12, "grisha", "11", 2.0},
+                            {101, "borya", "11", 4.7},
+                            {1704, "sigizmund", "12", 6.0},
+                            {104, "henessy", "VSOP", 40.0}};
+    deq.Insert(deq.Begin(), deq1.Begin(), deq1.End());
+    ForEach(deq.Begin(), deq.End(), [](students a){cout << a.id << ' ' << a.name << ' ' << a.group << ' ' << a.last_mark << endl; return a;});
 
-    Deque<int>::iterator it_find = FindIf(deq5.Begin(), deq5.End(), [](int x){return x < 0;});
+    Deque<students> deq2 = Deque<students>(deq1.Size());
+    CopyIf(deq1.Begin(), deq1.End(), deq2.Begin(), [](students a){return a.group == "11";});
+    ForEach(deq2.Begin(), deq2.End(), [](students a){cout << a.id << ' ' << a.name << ' ' << a.group << ' ' << a.last_mark << endl; return a;});
 
-    Deque<int>::iterator it_min = MinElement(deq5.Begin(), deq5.End());
-
-    Deque<int>::iterator it_max = MaxElement(deq5.Begin(), deq5.End());
-
-    Sort(deq5.Begin(), deq5.End());
-
-    ForEach(deq5.Begin(), deq5.End(), [](int x){return 2*x;});
-
-    cout << *it_find << endl;
-    cout << *it_max << endl;
-    cout << *it_min << endl;
-    for (int j = 0; j < deq5.Size() + 1; ++j) {
-        cout << deq5[j] << ' ';
+    double min = deq1[0].last_mark;
+    for (int j = 0; j < deq1.Size(); ++j) {
+        if (min > deq1[j].last_mark) min - deq[j].last_mark;
     }
-    cout << endl;
-
-    Deque<A> deq_A = {{1, 1}, {2, 2}};
-    ForEach(deq_A.Begin(), deq_A.End(), [](A a){cout << a.a << ' ' << a.b << endl; return a;});
-
+    Deque<students>::iterator it = FindIf(deq1.Begin(), deq1.End(), [min](students a){return a.last_mark == min;});
+    cin >> it -> group;
+    ForEach(deq1.Begin(), deq1.End(), [](students a){cout << a.id << ' ' << a.name << ' ' << a.group << ' ' << a.last_mark << endl; return a;});
     return 0;
 }
