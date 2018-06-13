@@ -37,13 +37,13 @@ int main()
     deq.Insert(deq.Begin(), deq1.Begin(), deq1.End());
     ForEach(deq.Begin(), deq.End(), [](students a){cout << a.id << ' ' << a.name << ' ' << a.group << ' ' << a.last_mark << endl; return a;});
 
-    Deque<students> deq2 = Deque<students>(deq1.Size());
+    Deque<students> deq2 = Deque<students>(2);
     CopyIf(deq1.Begin(), deq1.End(), deq2.Begin(), [](students a){return a.group == "11";});
     ForEach(deq2.Begin(), deq2.End(), [](students a){cout << a.id << ' ' << a.name << ' ' << a.group << ' ' << a.last_mark << endl; return a;});
 
     double min = deq1[0].last_mark;
     for (int j = 0; j < deq1.Size(); ++j) {
-        if (min > deq1[j].last_mark) min = deq[j].last_mark;
+        if (min > deq1[j].last_mark) min = deq1[j].last_mark;
     }
     Deque<students>::iterator it = FindIf(deq1.Begin(), deq1.End(), [min](students a){return a.last_mark == min;});
     cin >> it -> group;
