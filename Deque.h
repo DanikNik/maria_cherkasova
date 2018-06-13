@@ -194,7 +194,7 @@ void Deque<T>::Insert(DequeIterator<T> pos, T elem) {
         this->reallocate();
     }
     this->length++;
-    for (int i = this->length - 1; i > (pos.position - this->data); --i) {
+    for (int i = first_index + this->length - 1; i > (pos.position - this->data); --i) {
         this->data[i] = this->data[i - 1];
     }
     this->data[(pos.position - this->data)] = elem;
@@ -209,7 +209,7 @@ void Deque<T>::Insert(DequeIterator<T> pos, DequeIterator<T> beg, DequeIterator<
     }
     this->length += delta;
     this->last_index += delta;
-    for (int i = first_index + length; i > (int)((pos.position - data) + delta - 1); --i) {
+    for (int i = first_index + length - 1; i > (int)((pos.position - data) + delta - 1); --i) {
         this->data[i] = this->data[i - delta];
     }
     for (int j = (int)(pos.position - this->data); j < ((pos.position - this->data) + delta); ++j) {
