@@ -143,12 +143,12 @@ const T &Deque<T>::at(int idx) const {
 
 template<class T>
 DequeIterator<T> Deque<T>::Begin() {
-    return DequeIterator<T>(*this, first_index);
+    return DequeIterator<T>(*this, 0);
 }
 
 template<class T>
 DequeIterator<T> Deque<T>::End() {
-    return DequeIterator<T>(*this, first_index + length);
+    return DequeIterator<T>(*this, length);
 }
 
 template<class T>
